@@ -1,0 +1,16 @@
+{
+	"ChangeMarkedKeysBackground": false,
+	"AddIfUsedInQuestsToDesc": true,
+	"AddLootToDesc": true,
+	"BackgroundColor": {
+		"Factory": "green",
+		"Customs": "blue",
+		"Woods": "tracerGreen",
+		"Shoreline": "orange",
+		"Interchange": "tracerRed",
+		"Laboratory": "tracerYellow",
+		"Reserve": "violet",
+		"Lighthouse": "red",
+		"JunkKeys": "black"
+	}
+}

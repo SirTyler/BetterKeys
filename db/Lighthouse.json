@@ -1,0 +1,44 @@
+{
+    "Keys": {
+        "61a64428a8c6aa1b795f0ba1": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["Medbag","LooseLoot"]
+        },
+        "61a6444b8c141d68246e2d2f": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["Jacket","Bag","LooseLoot"]
+        },
+        "61aa5b518f5e7a39b41416e2": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["LooseVal","LooseCash","LooseLoot"]
+        },
+        "61aa5aed32a4743c3453d319": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["LooseLoot"]
+        },
+        "61a64492ba05ef10d62adcc1": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["WeaponBox","LooseLoot"]
+        },
+        "61aa81fcb225ac1ead7957c3": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["Toolbox","Jacket","LooseLoot"]
+        },
+        "61aa5b7db225ac1ead7957c1": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["Safe"]
+        },
+        "61aa5ba8018e9821b7368da9": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["Safe"]
+        }
+    }
+}
