@@ -10,11 +10,11 @@ namespace BetterKeys
     {
         private void Awake()
         {
+            _ = Resources.LoadTexture("betterkeys_trash", Path.Combine(ModInfo.path, "res/icon_betterkeys_trash.png"));
             _ = Resources.LoadTexture("betterkeys_s", Path.Combine(ModInfo.path, "res/icon_betterkeys_s.png"));
             _ = Resources.LoadTexture("betterkeys_a", Path.Combine(ModInfo.path, "res/icon_betterkeys_a.png"));
             _ = Resources.LoadTexture("betterkeys_b", Path.Combine(ModInfo.path, "res/icon_betterkeys_b.png"));
             _ = Resources.LoadTexture("betterkeys_c", Path.Combine(ModInfo.path, "res/icon_betterkeys_c.png"));
-            _ = Resources.LoadTexture("betterkeys_trash", Path.Combine(ModInfo.path, "res/icon_betterkeys_trash.png"));
             Patcher.PatchAll();
         }
 
