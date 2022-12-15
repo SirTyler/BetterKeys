@@ -1,38 +1,63 @@
 import _package from "../package.json"
 
 import { DependencyContainer } from "tsyringe";
+import { PreAkiModLoader } from "@spt-aki/loaders/PreAkiModLoader";
+import { IPreAkiLoadMod } from "@spt-aki/models/external/IPreAkiLoadMod";
+import { IPostAkiLoadMod } from "@spt-aki/models/external/IPostAkiLoadMod";
 import { IPostDBLoadMod } from "@spt-aki/models/external/IPostDBLoadMod";
 import { DatabaseServer } from "@spt-aki/servers/DatabaseServer";
+import { DynamicRouterModService } from "@spt-aki/services/mod/dynamicRouter/DynamicRouterModService"
 import { JsonUtil } from "@spt-aki/utils/JsonUtil";
 import { VFS } from "@spt-aki/utils/VFS";
 import { ILogger } from "@spt-aki/models/spt/utils/ILogger";
 import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 
-class BetterKeys implements IPostDBLoadMod
+class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
 {
     private modConfig = require("../config/config.json");
     private modPath = "user/mods/BetterKeys";
+    private router: DynamicRouterModService;
+    private vfs: VFS;
+    private modLoader: PreAkiModLoader;
+    private jsonUtil: JsonUtil;
+    private path = require("path");
+    private logger: ILogger;
+    private mod;
+    private _keys;
+
+    public preAkiLoad(container: DependencyContainer)
+    {
+        this.logger = container.resolve<ILogger>("WinstonLogger");
+        this.jsonUtil = container.resolve<JsonUtil>("JsonUtil");
+        this.router = container.resolve<DynamicRouterModService>("DynamicRouterModService");
+        this.mod = require("../package.json");
+        this.hookRoutes();
+
+    }
+
+    public postAkiLoad(container: DependencyContainer)
+    {
+        this.modLoader = container.resolve<PreAkiModLoader>("PreAkiModLoader");
+    }
 
     public postDBLoad(container: DependencyContainer): void
     {
-        const logger = container.resolve<ILogger>("WinstonLogger");
         const database = container.resolve<DatabaseServer>("DatabaseServer").getTables();
-        const vfs = container.resolve<VFS>("VFS");
-        const jsonUtil = container.resolve<JsonUtil>("JsonUtil");
+        this.vfs = container.resolve<VFS>("VFS");
 
-        const _keys = jsonUtil.deserialize(vfs.readFile(`${this.modPath}/db/_keys.json`));
-        this.load(database, jsonUtil, vfs, _keys, "bigmap", logger);
-        this.load(database, jsonUtil, vfs, _keys, "factory4", logger);
-        this.load(database, jsonUtil, vfs, _keys, "Interchange", logger);
-        this.load(database, jsonUtil, vfs, _keys, "laboratory", logger);
-        this.load(database, jsonUtil, vfs, _keys, "Lighthouse", logger);
-        this.load(database, jsonUtil, vfs, _keys, "RezervBase", logger);
-        this.load(database, jsonUtil, vfs, _keys, "Shoreline", logger);
-        this.load(database, jsonUtil, vfs, _keys, "Woods", logger);
-        logger.logWithColor(`Finished loading: ${_package.name}-${_package.version}`, LogTextColor.GREEN);
+        this._keys = this.jsonUtil.deserialize(this.vfs.readFile(`${this.modPath}/db/_keys.json`));
+        this.load(database, this.jsonUtil, this.vfs, this._keys, "bigmap", this.logger);
+        this.load(database, this.jsonUtil, this.vfs, this._keys, "factory4", this.logger);
+        this.load(database, this.jsonUtil, this.vfs, this._keys, "Interchange", this.logger);
+        this.load(database, this.jsonUtil, this.vfs, this._keys, "laboratory", this.logger);
+        this.load(database, this.jsonUtil, this.vfs, this._keys, "Lighthouse", this.logger);
+        this.load(database, this.jsonUtil, this.vfs, this._keys, "RezervBase", this.logger);
+        this.load(database, this.jsonUtil, this.vfs, this._keys, "Shoreline", this.logger);
+        this.load(database, this.jsonUtil, this.vfs, this._keys, "Woods", this.logger);
+        this.logger.logWithColor(`Finished loading: ${_package.name}-${_package.version}`, LogTextColor.GREEN);
     }
 
-    load(database, jsonUtil, vfs, modDb, mapID, logger)
+    private load(database, jsonUtil, vfs, modDb, mapID, logger)
     {
         const keyDb = jsonUtil.deserialize(vfs.readFile(`${this.modPath}/db/${mapID}.json`))
         for (const keyID in keyDb.Keys)
@@ -60,6 +85,56 @@ class BetterKeys implements IPostDBLoadMod
         }
 
         logger.info(`   Loaded: ${_package.name}-${mapID}`);
+    }
+
+    private hookRoutes()
+    {
+        this.router.registerDynamicRouter(
+            "BetterKeys",
+            [
+                {
+                    url: "/BetterKeys/GetInfo",
+                    action: (url, info, sessionId, output) =>
+                    {
+                        return this.getModInfo(url, info, sessionId, output)
+                    }
+                },
+                {
+                    url: "/BetterKeys/GetTiers",
+                    action: (url, info, sessionId, output) =>
+                    {
+                        return this.getTiers(url, info, sessionId, output)
+                    }
+                }
+            ],
+            "BetterKeys"
+        )
+    }
+
+    private getModInfo(url: string, info: any, sessionId: string, output: string)
+    {
+        const modOutput = {
+            status: 1,
+            data: null
+        };
+
+        modOutput.data = {..._package, ...{path: this.path.resolve(this.modLoader.getModPath("BetterKeys"))}};
+        modOutput.status = 0;
+
+        return this.jsonUtil.serialize(modOutput);
+    }
+
+    private getTiers(url: string, info: any, sessionId: string, output: string)
+    {
+        const modOutput = {
+            status: 1,
+            data: null
+        };
+
+        modOutput.data = {...this.jsonUtil.deserialize(this.vfs.readFile(`${this.modPath}/db/_keys.json`))};
+        modOutput.status = 0;
+
+        return this.jsonUtil.serialize(modOutput);
     }
 
     static getExtracts(keyId, modDb, locale)
