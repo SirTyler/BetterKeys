@@ -13,12 +13,12 @@ namespace BetterKeys
     public static class Resources
     {
         public static Dictionary<string, Sprite> iconCache = new Dictionary<string, Sprite>();
-        static BetterKeysItemViewPanel[] viewPanels = { null, null, null, null, null };
+        static BetterKeysItemViewPanel viewPanels;
 
-            public static BetterKeysItemViewPanel GetEditOffsetWindowTemplate(int itemId, QuestItemViewPanel original = null)
+        public static BetterKeysItemViewPanel GetEditOffsetWindowTemplate(int itemId, QuestItemViewPanel original = null)
         {
-            if(viewPanels[itemId] != null)
-                return viewPanels[itemId];
+            if (viewPanels != null)
+                return viewPanels;
 
             if (original == null)
                 throw new ArgumentNullException("original", "Can't be null if template isn't created yet!");
@@ -33,24 +33,10 @@ namespace BetterKeys
             //Copy fields over
             result.CopyFieldsFromQuestView(clone);
 
-            //Set custom sprite
-            if (result.iconImage != null)
-            {
-                result.iconImage.sprite = itemId switch
-                {
-                    1 => iconCache["betterkeys_s"] ?? UnityEngine.Resources.Load<Sprite>("characteristics/icons/icon_info_faction"),
-                    2 => iconCache["betterkeys_a"] ?? UnityEngine.Resources.Load<Sprite>("characteristics/icons/icon_info_faction"),
-                    3 => iconCache["betterkeys_b"] ?? UnityEngine.Resources.Load<Sprite>("characteristics/icons/icon_info_faction"),
-                    4 => iconCache["betterkeys_c"] ?? UnityEngine.Resources.Load<Sprite>("characteristics/icons/icon_info_faction"),
-                    _ => iconCache["betterkeys_trash"] ?? UnityEngine.Resources.Load<Sprite>("characteristics/icons/icon_info_faction"),
-                
-                };
-            }
-
             GameObject.DestroyImmediate(clone);
 
-            viewPanels[itemId] = result;
-            return viewPanels[itemId];
+            viewPanels = result;
+            return viewPanels;
         }
 
         public static void CopyFieldsFromQuestView(this BetterKeysItemViewPanel viewItem, QuestItemViewPanel questItem)

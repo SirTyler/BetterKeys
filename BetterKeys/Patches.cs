@@ -74,7 +74,7 @@ namespace BetterKeys
                 {
                     QuestItemViewPanel questIconPanel = typeof(ItemView).GetField("_questsItemViewPanel", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(__instance) as QuestItemViewPanel;
 
-                    BetterKeysItemViewPanel betterkeysIconPanel = GameObject.Instantiate(Resources.GetEditOffsetWindowTemplate(BetterKeys.IsKey(item), questIconPanel), questIconPanel.transform.parent);
+                    BetterKeysItemViewPanel betterkeysIconPanel = GameObject.Instantiate(Resources.GetEditOffsetWindowTemplate(BetterKeys.GetKey(item), questIconPanel), questIconPanel.transform.parent);
                     betterkeysIconPanel.transform.SetAsFirstSibling();
                     betterkeysPanels[__instance] = betterkeysIconPanel;
 
@@ -117,7 +117,7 @@ namespace BetterKeys
 
                 if (!betterkeysPanels.TryGetValue(__instance, out BetterKeysItemViewPanel betterkeysItemViewPanel))
                     return;
-                betterkeysItemViewPanel.iconImage.gameObject.SetActive(BetterKeys.IsKey(__instance.Item) != -1);
+                betterkeysItemViewPanel.iconImage.gameObject.SetActive(BetterKeys.IsKey(__instance.Item));
 
                 __instance.SetBetterKeysItemViewPanel();
             }

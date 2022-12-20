@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BetterKeys
 {
-    [BepInPlugin("com.SirTyler.BetterKeys", "SirTyler-BetterKeys", "1.1.0")]
+    [BepInPlugin("com.SirTyler.BetterKeys", "SirTyler-BetterKeys", "1.1.1")]
     public class BetterKeys : BaseUnityPlugin
     {
         private void Awake()
@@ -65,16 +65,20 @@ namespace BetterKeys
             }
         }
 
-        public static int IsKey(Item item)
+        public static bool IsKey(Item item)
         {
-            if ( item.Template._parent == "5c99f98d86f7745c314214b3" || item.Template._parent == "5c164d2286f774194c5e69fa" )
+            return (item.Template._parent == "5c99f98d86f7745c314214b3" || item.Template._parent == "5c164d2286f774194c5e69fa");
+        }
+
+        public static int GetKey(Item item)
+        {
+            if (item.Template._parent == "5c99f98d86f7745c314214b3" || item.Template._parent == "5c164d2286f774194c5e69fa")
             {
                 if (Tiers.JunkKeys.Contains(item.Template._id)) return 0;
                 else if (Tiers.STier.Contains(item.Template._id)) return 1;
                 else if (Tiers.ATier.Contains(item.Template._id)) return 2;
                 else if (Tiers.BTier.Contains(item.Template._id)) return 3;
                 else if (Tiers.CTier.Contains(item.Template._id)) return 4;
-                else return -1;
             }
             return -1;
         }
