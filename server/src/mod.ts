@@ -67,18 +67,18 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
                 if (!this.modConfig.ChangeMarkedKeysBackground && modDb.MarkedKeys.includes(keyID))
                     database.templates.items[keyID]._props.BackgroundColor = "yellow";
                 else 
-                    database.templates.items[keyID]._props.BackgroundColor = this.modConfig.BackgroundColor[database.locales.global["en"].interface[mapID]];
+                    database.templates.items[keyID]._props.BackgroundColor = this.modConfig.BackgroundColor[database.locales.global["en"][mapID]];
 
                 for (const localeID in database.locales.global)
                 {
-                    const originalDesc = database.locales.global[localeID].templates[keyID].Description;
+                    const originalDesc = database.locales.global[localeID][`${keyID} Description`];
 
                     if (vfs.exists(`${this.modPath}/locale/${localeID}.json`))
                     {
                         const loadedLocale = jsonUtil.deserialize(vfs.readFile(`${this.modPath}/locale/${localeID}.json`));
-                        const betterString = `${loadedLocale.mapString}: ${database.locales.global[localeID].interface[mapID]}.${BetterKeys.getExtracts(keyID, keyDb, loadedLocale)}\n${BetterKeys.isConfigQuestsEnabled(this.modConfig, keyID, keyDb, loadedLocale, database.locales.global[localeID])}${BetterKeys.isConfigLootEnabled(this.modConfig, keyID, keyDb, loadedLocale)}\n`;
+                        const betterString = `${loadedLocale.mapString}: ${database.locales.global[localeID][mapID]}.${BetterKeys.getExtracts(keyID, keyDb, loadedLocale)}\n${BetterKeys.isConfigQuestsEnabled(this.modConfig, keyID, keyDb, loadedLocale, database.locales.global[localeID])}${BetterKeys.isConfigLootEnabled(this.modConfig, keyID, keyDb, loadedLocale)}\n`;
 
-                        database.locales.global[localeID].templates[keyID].Description = betterString + originalDesc;
+                        database.locales.global[localeID][`${keyID} Description`] = betterString + originalDesc;
                     }
                 }
             }
@@ -139,18 +139,18 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
 
     static getExtracts(keyId, modDb, locale)
     {
-        let ex = "";
+        let extractList = "";
         for (const extract of modDb.Keys[keyId].Extract)
-            ex = ex + extract +", ";
-        return ex.length > 0 ? ` ${locale.extractString}: ` + ex.substring(0,ex.length-2) + "." : "";
+            extractList = extractList + extract +", ";
+        return extractList.length > 0 ? ` ${locale.extractString}: ` + extractList.substring(0,extractList.length-2) + "." : "";
     }
 
     static getLoot(keyId, modDb, locale)
     {
-        let loots = "";
+        let lootList = "";
         for (const lootId of modDb.Keys[keyId].Loot)
-            loots = loots + locale[lootId]+", ";
-        return loots.length > 0 ? loots.substring(0,loots.length-2) : `${locale.no}`;
+            lootList = lootList + locale[lootId]+", ";
+        return lootList.length > 0 ? lootList.substring(0,lootList.length-2) : `${locale.no}`;
         
     }
 
@@ -163,10 +163,10 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
 
     static isUsedInQuests(keyId, modDb, locale, database)
     {
-        let quests = "";
-        for (const q of modDb.Keys[keyId].Quest)
-            quests = quests + database.quest[q].name +", ";
-        return quests.length > 0 ? quests.substring(0,quests.length-2) : `${locale.no}`;
+        let questList = "";
+        for (const quest of modDb.Keys[keyId].Quest)
+            questList = questList + database[`${quest} name`] +", ";
+        return questList.length > 0 ? questList.substring(0,questList.length-2) : `${locale.no}`;
     }
 	
     static isConfigQuestsEnabled(config, keyId, modDb, locale, database)
