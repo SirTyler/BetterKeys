@@ -12,6 +12,8 @@ import { VFS } from "@spt-aki/utils/VFS";
 import { ILogger } from "@spt-aki/models/spt/utils/ILogger";
 import { LogTextColor } from "@spt-aki/models/spt/logging/LogTextColor";
 
+import https from "https";
+
 class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
 {
     private modConfig = require("../config/config.json");
@@ -24,6 +26,7 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
     private logger: ILogger;
     private mod;
     private _keys;
+    private _versions;
 
     public preAkiLoad(container: DependencyContainer)
     {
@@ -32,7 +35,6 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
         this.router = container.resolve<DynamicRouterModService>("DynamicRouterModService");
         this.mod = require("../package.json");
         this.hookRoutes();
-
     }
 
     public postAkiLoad(container: DependencyContainer)
@@ -44,22 +46,30 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
     {
         const database = container.resolve<DatabaseServer>("DatabaseServer").getTables();
         this.vfs = container.resolve<VFS>("VFS");
-
         this._keys = this.jsonUtil.deserialize(this.vfs.readFile(`${this.modPath}/db/_keys.json`));
-        this.load(database, this.jsonUtil, this.vfs, this._keys, "bigmap", this.logger);
-        this.load(database, this.jsonUtil, this.vfs, this._keys, "factory4", this.logger);
-        this.load(database, this.jsonUtil, this.vfs, this._keys, "Interchange", this.logger);
-        this.load(database, this.jsonUtil, this.vfs, this._keys, "laboratory", this.logger);
-        this.load(database, this.jsonUtil, this.vfs, this._keys, "Lighthouse", this.logger);
-        this.load(database, this.jsonUtil, this.vfs, this._keys, "RezervBase", this.logger);
-        this.load(database, this.jsonUtil, this.vfs, this._keys, "Shoreline", this.logger);
-        this.load(database, this.jsonUtil, this.vfs, this._keys, "Woods", this.logger);
+        this._versions = this.jsonUtil.deserialize(this.vfs.readFile(`${this.modPath}/db/_versions.json`));
+        if (this.modConfig.AutoUpdate)
+            this.update(database);
+        else
+            this.loadDatabase(database);
+    }
+
+    public loadDatabase(database): void
+    {
+        this.load(database, this._keys, "bigmap");
+        this.load(database, this._keys, "factory4");
+        this.load(database, this._keys, "Interchange");
+        this.load(database, this._keys, "laboratory");
+        this.load(database, this._keys, "Lighthouse");
+        this.load(database, this._keys, "RezervBase");
+        this.load(database, this._keys, "Shoreline");
+        this.load(database, this._keys, "Woods");
         this.logger.logWithColor(`Finished loading: ${_package.name}-${_package.version}`, LogTextColor.GREEN);
     }
 
-    private load(database, jsonUtil, vfs, modDb, mapID, logger)
+    private load(database, modDb, mapID)
     {
-        const keyDb = jsonUtil.deserialize(vfs.readFile(`${this.modPath}/db/${mapID}.json`))
+        const keyDb = this.jsonUtil.deserialize(this.vfs.readFile(`${this.modPath}/db/${mapID}.json`))
         for (const keyID in keyDb.Keys)
         {
             if (database.templates.items[keyID])
@@ -73,9 +83,9 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
                 {
                     const originalDesc = database.locales.global[localeID][`${keyID} Description`];
 
-                    if (vfs.exists(`${this.modPath}/locale/${localeID}.json`))
+                    if (this.vfs.exists(`${this.modPath}/locale/${localeID}.json`))
                     {
-                        const loadedLocale = jsonUtil.deserialize(vfs.readFile(`${this.modPath}/locale/${localeID}.json`));
+                        const loadedLocale = this.jsonUtil.deserialize(this.vfs.readFile(`${this.modPath}/locale/${localeID}.json`));
                         const betterString = `${loadedLocale.mapString}: ${database.locales.global[localeID][mapID]}.${BetterKeys.getExtracts(keyID, keyDb, loadedLocale)}\n${BetterKeys.isConfigQuestsEnabled(this.modConfig, keyID, keyDb, loadedLocale, database.locales.global[localeID])}${BetterKeys.isConfigLootEnabled(this.modConfig, keyID, keyDb, loadedLocale)}\n`;
 
                         database.locales.global[localeID][`${keyID} Description`] = betterString + originalDesc;
@@ -84,7 +94,94 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
             }
         }
 
-        logger.info(`   Loaded: ${_package.name}-${mapID}`);
+        this.logger.info(`   Loaded: ${_package.name}-${mapID}`);
+    }
+
+    private update(database)
+    {
+        https.get("https://raw.githubusercontent.com/SirTyler/BetterKeys/main/server/db/_versions.json",(res) => 
+        {
+            let body = "";
+        
+            res.on("data", (chunk) => 
+            {
+                body += chunk;
+            });
+        
+            res.on("end", () => 
+            {
+                try
+                {
+                    const array: string[] = ["_keys","bigmap","factory4","Interchange","laboratory","Lighthouse","RezerveBase","Shoreline","Woods"];
+                    let b = false;
+                    const json = JSON.parse(body);
+                    for (const i in array)
+                    {
+                        if (json[array[i]] > this._versions[array[i]])
+                        {
+                            this.updateFile(array[i]);
+                            this._versions[array[i]] = json[array[i]];
+                            if (!b) b = true;
+                        }
+                    }
+
+                    if (b)
+                    {
+                        this.vfs.removeFile(`${this.modPath}/db/_versions.json`);
+                        this.vfs.writeFile(`${this.modPath}/db/_versions.json`, body);
+                        this.logger.logWithColor(`Finished updating: ${_package.name}-${_package.version}`, LogTextColor.GREEN);
+                        this.loadDatabase(database);
+                    }
+                    else 
+                    {
+                        this.logger.logWithColor(`No Updates: ${_package.name}-${_package.version}`, LogTextColor.GREEN);
+                        this.loadDatabase(database);
+                    }
+                }
+                catch (error) 
+                {
+                    this.logger.error(error.message);
+                }
+            });
+        
+        }).on("error", (error) => 
+        {
+            this.logger.error(error.message);
+        });
+    }
+
+    private updateFile(file)
+    {
+        if (this.vfs.exists(`${this.modPath}/db/${file}.json`))
+        {
+            https.get(`https://raw.githubusercontent.com/SirTyler/BetterKeys/main/server/db/${file}.json`,(res) => 
+            {
+                let body = "";
+            
+                res.on("data", (chunk) => 
+                {
+                    body += chunk;
+                });
+            
+                res.on("end", () => 
+                {
+                    try
+                    {
+                        this.vfs.removeFile(`${this.modPath}/db/${file}.json`);
+                        this.vfs.writeFile(`${this.modPath}/db/${file}.json`, body);
+                        this.logger.info(`   Updated: ${_package.name}-${file}`);
+                    }
+                    catch (error) 
+                    {
+                        this.logger.error(error.message);
+                    }
+                });
+            
+            }).on("error", (error) => 
+            {
+                this.logger.error(error.message);
+            });
+        }
     }
 
     private hookRoutes()
@@ -111,6 +208,7 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
         )
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getModInfo(url: string, info: any, sessionId: string, output: string)
     {
         const modOutput = {
@@ -124,6 +222,7 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
         return this.jsonUtil.serialize(modOutput);
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     private getTiers(url: string, info: any, sessionId: string, output: string)
     {
         const modOutput = {
