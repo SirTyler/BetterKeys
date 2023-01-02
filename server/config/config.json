@@ -1,4 +1,5 @@
 {
+	"AutoUpdate": false,
 	"ChangeMarkedKeysBackground": false,
 	"AddIfUsedInQuestsToDesc": true,
 	"AddLootToDesc": true,
