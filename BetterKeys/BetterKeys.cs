@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace BetterKeys
 {
-    [BepInPlugin("com.SirTyler.BetterKeys", "SirTyler-BetterKeys", "1.1.2")]
+    [BepInPlugin("com.SirTyler.BetterKeys", "SirTyler-BetterKeys", "1.2.0")]
     public class BetterKeys : BaseUnityPlugin
     {
         private void Awake()
