@@ -5,6 +5,11 @@
             "Quest": ["5a0449d586f77474e66227b7"],
             "Loot": []
         },
+        "5a0f0f5886f7741c4e32a472": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["Safe"]
+        },
         "5a0eb6ac86f7743124037a28": {
             "Extract": [],
             "Quest": ["5edaba7c0c502106f869bc02"],
@@ -94,6 +99,11 @@
             "Extract": [],
             "Quest": ["5a68663e86f774501078f78a"],
             "Loot": ["LooseCash","LooseLoot"]
+        },
+        "5a13ee1986f774794d4c14cd": {
+            "Extract": [],
+            "Quest": [],
+            "Loot": ["WeaponRack","LooseLoot"]
         },
         "5a0ea64786f7741707720468": {
             "Extract": [],

@@ -48,7 +48,7 @@
         "5938504186f7740991483f30": {
             "Extract": [],
             "Quest": ["5967725e86f774601a446662"],
-            "Loot": ["Medbag"]
+            "Loot": ["Bag"]
         },
         "59148c8a86f774197930e983": {
             "Extract": [],
@@ -68,7 +68,7 @@
         "5780cfa52459777dfb276eb1": {
             "Extract": [],
             "Quest": ["5979f9ba86f7740f6c3fe9f2","597a0b2986f77426d66c0633"],
-            "Loot": ["Medbag","Jacket","LooseLoot","LooseCash"]
+            "Loot": ["Bag","Jacket","LooseLoot","LooseCash"]
         },
         "593aa4be86f77457f56379f8": {
             "Extract": [],
@@ -108,7 +108,7 @@
         "5780d0532459777a5108b9a2": {
             "Extract": [],
             "Quest": ["59674eb386f774539f14813a","5ac3462b86f7741d6118b983"],
-            "Loot": ["Medbag","PC","Safe","Jacket","LooseLoot"]
+            "Loot": ["Bag","PC","Safe","Jacket","LooseLoot"]
         },
         "5780d07a2459777de4559324": {
             "Extract": [],
