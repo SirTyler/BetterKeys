@@ -1,10 +1,10 @@
 {
     "name": "BetterKeys",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "main": "src/mod.js",
     "license": "MIT",
     "author": "SirTyler",
-    "akiVersion": "3.4.1",
+    "akiVersion": "3.4.*",
     "scripts": {
         "setup": "npm i",
         "build": "node ./packageBuild.ts"
