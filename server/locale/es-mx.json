@@ -1,13 +1,13 @@
 {
 	"mapString": "Mapa",
 	"questString": "Requerido en Misiones",
-	"extractString": "Extracto",
+	"extractString": "Extracción",
 	"lootString": "Accede al botín",
 	"yes": "Sí",
 	"no": "No",
-	"Safe": "Seguro",
+	"Safe": "Caja Fuerte",
 	"Medbag": "Bolsa médica",
-	"PC": "Bloque de computadora",
+	"PC": "Gabinete de PC",
 	"Grenade": "Caja de granadas",
 	"Drawer": "Cajón",
 	"CashReg": "Caja registradora",
@@ -18,7 +18,7 @@
 	"Bag": "Bolsa de deporte",
 	"Toolbox": "Caja de herramientas",
 	"LooseVal": "Objetos de valor sueltos",
-	"LooseCash": "Moneda suelta",
+	"LooseCash": "Dinero suelto",
 	"LooseLoot": "Botín suelto",
 	"WeaponRack": "Estante de armas de pie"
 }
