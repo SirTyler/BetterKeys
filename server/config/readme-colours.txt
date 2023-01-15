@@ -1,3 +1,5 @@
+off             = Disable color background
+
 All possible colors and one example from vanilla (if it has one)
 
 blue			= Blue background, weapon mods in vanilla

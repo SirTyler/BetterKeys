@@ -84,8 +84,12 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
             {
                 if (!this.modConfig.ChangeMarkedKeysBackground && modDb.MarkedKeys.includes(keyID))
                     database.templates.items[keyID]._props.BackgroundColor = "yellow";
-                else 
-                    database.templates.items[keyID]._props.BackgroundColor = this.modConfig.BackgroundColor[database.locales.global["en"][mapID]];
+                else
+                {
+                    const color = this.modConfig.BackgroundColor[database.locales.global["en"][mapID]];
+                    if (color.toUpperCase() != "OFF")
+                        database.templates.items[keyID]._props.BackgroundColor = color
+                }
 
                 for (const localeID in database.locales.global)
                 {
