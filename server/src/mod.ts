@@ -55,7 +55,7 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
         {
             const localeArray: string[] = ["ch","cz","en","es-mx","es","fr","ge","hu","it","jp","kr","pl","po","ru","sk","tu"];
             this.update(this._versionsLocale, "locale", localeArray, database, false);
-            const mapArray: string[] = ["_keys","bigmap","factory4","Interchange","laboratory","Lighthouse","RezerveBase","Shoreline","Woods"];
+            const mapArray: string[] = ["_keys","bigmap","factory4","Interchange","laboratory","Lighthouse","RezerveBase","Shoreline","Woods","TarkovStreets"];
             this.update(this._versions, "db", mapArray, database, true);
         }
         else
@@ -72,6 +72,7 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
         this.load(database, this._keys, "RezervBase");
         this.load(database, this._keys, "Shoreline");
         this.load(database, this._keys, "Woods");
+        this.load(database, this._keys, "TarkovStreets");
         this.logger.logWithColor(`Finished loading: ${_package.name}-${_package.version}`, LogTextColor.GREEN);
     }
 

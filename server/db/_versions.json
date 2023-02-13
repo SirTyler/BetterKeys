@@ -1,5 +1,5 @@
 {
-      "_keys": "1.2.0",
+      "_keys": "1.2.3",
       "bigmap": "1.2.0",
       "factory4": "1.2.0",
       "Interchange": "1.2.0",
@@ -7,5 +7,6 @@
       "Lighthouse": "1.2.0",
       "RezervBase": "1.2.0",
       "Shoreline": "1.2.0",
-      "Woods": "1.2.0"
+      "Woods": "1.2.0",
+      "TarkovStreets": "1.2.3"
   }
