@@ -1,6 +1,6 @@
 {
     "name": "BetterKeys",
-    "version": "1.2.3",
+    "version": "1.2.4",
     "main": "src/mod.js",
     "license": "MIT",
     "author": "SirTyler",

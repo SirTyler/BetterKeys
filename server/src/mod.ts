@@ -64,19 +64,19 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
 
     public loadDatabase(database: IDatabaseTables): void
     {
-        this.load(database, this._keys, "bigmap");
-        this.load(database, this._keys, "factory4");
-        this.load(database, this._keys, "Interchange");
-        this.load(database, this._keys, "laboratory");
-        this.load(database, this._keys, "Lighthouse");
-        this.load(database, this._keys, "RezervBase");
-        this.load(database, this._keys, "Shoreline");
-        this.load(database, this._keys, "Woods");
-        this.load(database, this._keys, "TarkovStreets");
+        this.load(database, this._keys, "bigmap", "56f40101d2720b2a4d8b45d6");
+        this.load(database, this._keys, "factory4", "55f2d3fd4bdc2d5f408b4567");
+        this.load(database, this._keys, "Interchange", "5714dbc024597771384a510d");
+        this.load(database, this._keys, "laboratory", "5b0fc42d86f7744a585f9105");
+        this.load(database, this._keys, "Lighthouse", "5704e4dad2720bb55b8b4567");
+        this.load(database, this._keys, "RezervBase", "5704e5fad2720bc05b8b4567");
+        this.load(database, this._keys, "Shoreline", "5704e554d2720bac5b8b456e");
+        this.load(database, this._keys, "Woods", "5704e3c2d2720bac5b8b4567");
+        this.load(database, this._keys, "TarkovStreets", "5714dc692459777137212e12");
         this.logger.logWithColor(`Finished loading: ${_package.name}-${_package.version}`, LogTextColor.GREEN);
     }
 
-    private load(database: IDatabaseTables, modDb, mapID: string): void
+    private load(database: IDatabaseTables, modDb, mapID: string, mapKey: string): void
     {
         const keyDb = this.jsonUtil.deserialize(this.vfs.readFile(`${this.modPath}/db/${mapID}.json`))
         for (const keyID in keyDb.Keys)
@@ -87,7 +87,7 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
                     database.templates.items[keyID]._props.BackgroundColor = "yellow";
                 else
                 {
-                    const color = this.modConfig.BackgroundColor[database.locales.global["en"][mapID]];
+                    const color = this.modConfig.BackgroundColor[database.locales.global["en"][`${mapKey} Name`]];
                     if (color.toUpperCase() != "OFF")
                         database.templates.items[keyID]._props.BackgroundColor = color
                 }
@@ -101,7 +101,7 @@ class BetterKeys implements IPostDBLoadMod, IPreAkiLoadMod, IPostAkiLoadMod
                         loadedLocale = this.jsonUtil.deserialize(this.vfs.readFile(`${this.modPath}/locale/${localeID}.json`));
                     }
 
-                    const betterString = `${loadedLocale.mapString}: ${database.locales.global[localeID][mapID]}.${BetterKeys.getExtracts(keyID, keyDb, loadedLocale)}\n${BetterKeys.isConfigQuestsEnabled(this.modConfig, keyID, keyDb, loadedLocale, database.locales.global[localeID])}${BetterKeys.isConfigLootEnabled(this.modConfig, keyID, keyDb, loadedLocale)}\n`;
+                    const betterString = `${loadedLocale.mapString}: ${database.locales.global[localeID][`${mapKey} Name`]}.${BetterKeys.getExtracts(keyID, keyDb, loadedLocale)}\n${BetterKeys.isConfigQuestsEnabled(this.modConfig, keyID, keyDb, loadedLocale, database.locales.global[localeID])}${BetterKeys.isConfigLootEnabled(this.modConfig, keyID, keyDb, loadedLocale)}\n`;
                     database.locales.global[localeID][`${keyID} Description`] = betterString + originalDesc;
                 }
             }
